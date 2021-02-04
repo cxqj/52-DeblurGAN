@@ -21,7 +21,7 @@ class BlurImage(object):
         if os.path.isfile(image_path):
             self.image_path = image_path
             self.original = misc.imread(self.image_path)
-            self.shape = self.original.shape
+            self.shape = self.original.shape  #(720，720，3)
             if len(self.shape) < 3:
                 raise Exception('We support only RGB images yet.')
             elif self.shape[0] != self.shape[1]:
@@ -36,12 +36,12 @@ class BlurImage(object):
                 self.PSFs = PSF(canvas=self.shape[0], path_to_save=os.path.join(self.path_to_save,
                                                                                 'PSFs.png')).fit(save=True)
         else:
-            self.PSFs = PSFs
+            self.PSFs = PSFs  #(64，64，4)
 
         self.part = part
         self.result = []
 
-    def blur_image(self, save=False, show=False):
+    def blur_image(self, save=False, show=False):   #save=True  show=False
         if self.part is None:
             psf = self.PSFs
         else:
@@ -113,8 +113,8 @@ if __name__ == '__main__':
     params = [0.01, 0.009, 0.008, 0.007, 0.005, 0.003]
     for path in os.listdir(folder):
         print(path)
-        trajectory = Trajectory(canvas=64, max_len=60, expl=np.random.choice(params)).fit()
-        psf = PSF(canvas=64, trajectory=trajectory).fit()
+        trajectory = Trajectory(canvas=64, max_len=60, expl=np.random.choice(params)).fit()  #运动轨迹
+        psf = PSF(canvas=64, trajectory=trajectory).fit()  #模糊核
         BlurImage(os.path.join(folder, path), PSFs=psf,
-                  path__to_save=folder_to_save, part=np.random.choice([1, 2, 3])).\
+                  path__to_save=folder_to_save, part=np.random.choice([1, 2, 3])).\  # part用于选取核
             blur_image(save=True)
